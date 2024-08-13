@@ -1,8 +1,11 @@
 'use strict';
 
+import {randomUUID} from 'node:crypto';
+
 import {describe, expect, test} from '@jest/globals';
 
 import {HttpError} from '../../../src';
+import {HttpStatusCode} from '../../../src';
 
 
 describe('HttpError', (): void => {
@@ -16,49 +19,133 @@ describe('HttpError', (): void => {
         expect(error.message).toStrictEqual('The message');
     });
 
-    test('HttpError.badRequest()', (): void => {
-        const error: HttpError = HttpError.badRequest('Bad Request !!');
+    test.each([
+        {
+            method: 'badRequest',
+            status: HttpStatusCode.BAD_REQUEST,
+        },
+        {
+            method: 'unauthorized',
+            status: HttpStatusCode.UNAUTHORIZED,
+        },
+        {
+            method: 'forbidden',
+            status: HttpStatusCode.FORBIDDEN,
+        },
+        {
+            method: 'notFound',
+            status: HttpStatusCode.NOT_FOUND,
+        },
+        {
+            method: 'methodNotAllowed',
+            status: HttpStatusCode.METHOD_NOT_ALLOWED,
+        },
+        {
+            method: 'notAcceptable',
+            status: HttpStatusCode.NOT_ACCEPTABLE,
+        },
+        {
+            method: 'proxyAuthenticationRequired',
+            status: HttpStatusCode.PROXY_AUTHENTICATION_REQUIRED,
+        },
+        {
+            method: 'requestTimeout',
+            status: HttpStatusCode.REQUEST_TIMEOUT,
+        },
+        {
+            method: 'conflict',
+            status: HttpStatusCode.CONFLICT,
+        },
+        {
+            method: 'gone',
+            status: HttpStatusCode.GONE,
+        },
+        {
+            method: 'lengthRequired',
+            status: HttpStatusCode.LENGTH_REQUIRED,
+        },
+        {
+            method: 'preconditionFailed',
+            status: HttpStatusCode.PRECONDITION_FAILED,
+        },
+        {
+            method: 'payloadTooLarge',
+            status: HttpStatusCode.PAYLOAD_TOO_LARGE,
+        },
+        {
+            method: 'uriTooLong',
+            status: HttpStatusCode.URI_TOO_LONG,
+        },
+        {
+            method: 'unsupportedMediaType',
+            status: HttpStatusCode.UNSUPPORTED_MEDIA_TYPE,
+        },
+        {
+            method: 'rangeNotSatisfiable',
+            status: HttpStatusCode.RANGE_NOT_SATISFIABLE,
+        },
+        {
+            method: 'expectationFailed',
+            status: HttpStatusCode.EXPECTATION_FAILED,
+        },
+        {
+            method: 'imATeapot',
+            status: HttpStatusCode.IM_A_TEAPOT,
+        },
+        {
+            method: 'misdirectedRequest',
+            status: HttpStatusCode.MISDIRECTED_REQUEST,
+        },
+        {
+            method: 'upgradeRequired',
+            status: HttpStatusCode.UPGRADE_REQUIRED,
+        },
+        {
+            method: 'preconditionRequired',
+            status: HttpStatusCode.PRECONDITION_REQUIRED,
+        },
+        {
+            method: 'tooManyRequests',
+            status: HttpStatusCode.TOO_MANY_REQUESTS,
+        },
+        {
+            method: 'requestHeaderFieldsTooLarge',
+            status: HttpStatusCode.REQUEST_HEADER_FIELDS_TOO_LARGE,
+        },
+        {
+            method: 'unavailableForLegalReasons',
+            status: HttpStatusCode.UNAVAILABLE_FOR_LEGAL_REASONS,
+        },
+        {
+            method: 'paymentRequired',
+            status: HttpStatusCode.PAYMENT_REQUIRED,
+        },
+        {
+            method: 'tooEarly',
+            status: HttpStatusCode.TOO_EARLY,
+        },
+        {
+            method: 'unprocessableContent',
+            status: HttpStatusCode.UNPROCESSABLE_CONTENT,
+        },
+        {
+            method: 'locked',
+            status: HttpStatusCode.LOCKED,
+        },
+        {
+            method: 'failedDependency',
+            status: HttpStatusCode.FAILED_DEPENDENCY,
+        },
+    ])('HttpError.$1()', ({method, status}): void => {
+        const randomMessage: string = randomUUID();
+
+        // @ts-ignore
+        const error: HttpError = HttpError[method](randomMessage);
 
         expect(error).toBeInstanceOf(HttpError);
 
-        expect(error.status).toStrictEqual(400);
-        expect(error.message).toStrictEqual('Bad Request !!');
-    });
-
-    test('HttpError.unauthorized()', (): void => {
-        const error: HttpError = HttpError.unauthorized('Unauthorized message');
-
-        expect(error).toBeInstanceOf(HttpError);
-
-        expect(error.status).toStrictEqual(401);
-        expect(error.message).toStrictEqual('Unauthorized message');
-    });
-
-    test('HttpError.forbidden()', (): void => {
-        const error: HttpError = HttpError.forbidden('You shall not pass!');
-
-        expect(error).toBeInstanceOf(HttpError);
-
-        expect(error.status).toStrictEqual(403);
-        expect(error.message).toStrictEqual('You shall not pass!');
-    });
-
-    test('HttpError.notFound()', (): void => {
-        const error: HttpError = HttpError.notFound('Page/route not found');
-
-        expect(error).toBeInstanceOf(HttpError);
-
-        expect(error.status).toStrictEqual(404);
-        expect(error.message).toStrictEqual('Page/route not found');
-    });
-
-    test('HttpError.failedDependency()', (): void => {
-        const error: HttpError = HttpError.failedDependency('Something else needs to happen first');
-
-        expect(error).toBeInstanceOf(HttpError);
-
-        expect(error.status).toStrictEqual(424);
-        expect(error.message).toStrictEqual('Something else needs to happen first');
+        expect(error.status).toStrictEqual(status);
+        expect(error.message).toStrictEqual(randomMessage);
     });
 
 });
