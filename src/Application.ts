@@ -1,6 +1,6 @@
 'use strict';
 
-import EventEmitter from 'node:events';
+import EventEmitter from 'events';
 import http from 'http';
 
 import {APIGatewayProxyEvent, APIGatewayProxyResult, Context} from 'aws-lambda';
