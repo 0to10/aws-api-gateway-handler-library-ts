@@ -10,4 +10,12 @@ module.exports = {
   // collectCoverageFrom: [
   //     './src/**',
   // ],
+  transform: {
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig-cjs.json',
+      },
+    ],
+  },
 };

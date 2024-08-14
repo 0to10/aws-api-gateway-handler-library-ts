@@ -2,13 +2,15 @@
     "compilerOptions": {
         "incremental": false,
 
-        "target": "ES2017",
-        "module": "commonjs",
+        "target": "ES2015",
+        "module": "ES2020",
         "sourceMap": true,
         "declaration": true,
         "baseUrl": "./",
-        "outDir": "./dist",
+        "outDir": "./dist/esm",
         "removeComments": true,
+
+        "moduleResolution": "node",
 
         "strict": true,
         "noImplicitAny": true,
