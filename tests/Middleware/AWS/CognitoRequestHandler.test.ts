@@ -32,7 +32,6 @@ describe('CognitoRequestHandler', (): void => {
             response: Response,
         ): Promise<void> => {
             response.status(200).json({
-                // @ts-ignore
                 cognito: request.cognito,
             });
         });
