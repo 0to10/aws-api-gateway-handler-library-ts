@@ -44,7 +44,7 @@ application.express.get('/test', (
 application.listen(80);
 
 // Expose the handler
-export const handler = application.handler;
+export const handler = application.handler.bind(application);
 ```
 
 
