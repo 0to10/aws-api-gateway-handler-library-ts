@@ -1,7 +1,24 @@
 'use strict';
 
-export {Application} from './Application';
-export {Configuration} from './Configuration';
-export {CognitoRequestInformation} from './CognitoRequestInformation';
-export {HttpError} from './HTTP/Error/HttpError';
-export {HttpStatusCode} from './HTTP/HttpStatusCode';
+import {Application} from './Application';
+import {Configuration} from './Configuration';
+import {CognitoRequestInformation} from './CognitoRequestInformation';
+import {HttpError} from './HTTP/Error/HttpError';
+import {HttpStatusCode} from './HTTP/HttpStatusCode';
+
+export {
+    Application,
+    Configuration,
+    CognitoRequestInformation,
+    HttpError,
+    HttpStatusCode,
+};
+
+declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace Express {
+        export interface Request {
+            cognito: CognitoRequestInformation;
+        }
+    }
+}
