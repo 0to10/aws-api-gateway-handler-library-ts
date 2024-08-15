@@ -8,6 +8,8 @@ import {HttpStatusCode} from './HTTP/HttpStatusCode';
 import {ResponseMapper} from './HTTP/ResponseMapper';
 import {ResponseMapperAware} from './HTTP/ResponseMapperAware';
 
+import {NextFunction, Request, RequestHandler, Response} from 'express';
+
 export {
     Application,
     Configuration,
@@ -16,6 +18,12 @@ export {
     HttpStatusCode,
     ResponseMapper,
     ResponseMapperAware,
+
+    // Express
+    NextFunction,
+    Request,
+    RequestHandler,
+    Response,
 };
 
 declare global {
