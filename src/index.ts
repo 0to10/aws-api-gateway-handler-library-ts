@@ -5,6 +5,8 @@ import {Configuration} from './Configuration';
 import {CognitoRequestInformation} from './CognitoRequestInformation';
 import {HttpError} from './HTTP/Error/HttpError';
 import {HttpStatusCode} from './HTTP/HttpStatusCode';
+import {ResponseMapper} from './HTTP/ResponseMapper';
+import {ResponseMapperAware} from './HTTP/ResponseMapperAware';
 
 export {
     Application,
@@ -12,6 +14,8 @@ export {
     CognitoRequestInformation,
     HttpError,
     HttpStatusCode,
+    ResponseMapper,
+    ResponseMapperAware,
 };
 
 declare global {
