@@ -1,7 +1,7 @@
 {
   "name": "@0to10/aws-api-gateway-handler",
   "description": "Typescript library for setting up Lambda functions to serve as API Gateway handler",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "0TO10 <open-source-software@0to10.nl>",
   "homepage": "https://0to10.nl",
   "keywords": [

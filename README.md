@@ -27,14 +27,14 @@ Quick setup:
 
 import http from 'http';
 
-import {Application} from '@0to10/aws-api-gateway-handler';
+import {Application, Request, Response} from '@0to10/aws-api-gateway-handler';
 
 const application: Application = new Application();
 
 // Any application logic, such as registering routes, may be added after instantiation
 application.express.get('/test', (
-    _request: express.Request,
-    response: express.Response,
+    _request: Request,
+    response: Response,
 ): void => {
     response.status(200).json({
         message: 'Test was a success!',
@@ -69,10 +69,36 @@ const application: Application = new Application(config);
 
 Below is an overview of the configuration options available.
 
-| Option  | Type     | Default                                                  |
-|---------|----------|----------------------------------------------------------|
-| disable | string[] | `['x-powered-by']` see Express.js all available features |
-| cors    | boolean  | `true`                                                   |
+| Option    | Type       | Default            |
+|-----------|------------|--------------------|
+| `disable` | `string[]` | `['x-powered-by']` |
+| `cors`    | `boolean`  | `true`             |
+
+A full list of available features that may be disabled (via the `disable` option) is available on the
+[Express.js](https://expressjs.com/en/4x/api.html#app.settings.table) website.
+
+
+### Events
+
+Various events are emitted within this library, you may attach listeners to the events by following the
+example below:
+
+```typescript
+// Application bootstrap omitted
+
+application.events.on('listening', (port: number): void => {
+    console.log('Listening on port ' + port);
+});
+```
+
+Below is an overview of the available events.
+
+| Event         | Arguments                       | Notes                                                |
+|---------------|---------------------------------|------------------------------------------------------|
+| `listening`   | `(port: number)`                | Emitted when the server is ready to process requests |
+| `event`       | `(event: APIGatewayProxyEvent)` | Emitted every time a request is handled              |
+| `debug:error` | `(error: any)`                  | Emitted whenever the error handler handles an error  |
+
 
 
 ### AWS Cognito
