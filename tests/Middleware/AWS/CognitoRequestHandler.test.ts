@@ -53,6 +53,7 @@ describe('CognitoRequestHandler', (): void => {
                     cognito: {
                         identityId: 'us-east-1:00000000-0000-0000-0000-000000000000',
                         userPoolId: 'us-east-1_TestPool',
+                        subject: '1a072f08-5c61-4c89-807e-417d22702eb7',
                         username: '1a072f08-5c61-4c89-807e-417d22702eb7',
                     },
                 });

@@ -36,12 +36,13 @@ export class CognitoRequestHandler {
             }
 
             if (cognitoAuthenticationProvider) {
-                const [, cognitoUserPoolId, cognitoUsername] = cognitoAuthenticationProvider
+                const [, cognitoUserPoolId, cognitoSubject] = cognitoAuthenticationProvider
                     .match(/([\w-]+_[0-9a-zA-Z]+):CognitoSignIn:(.+)/) || []
                 ;
 
                 request.cognito.userPoolId = cognitoUserPoolId;
-                request.cognito.username = cognitoUsername;
+                request.cognito.subject = cognitoSubject;
+                request.cognito.username = cognitoSubject;
             }
 
             next();

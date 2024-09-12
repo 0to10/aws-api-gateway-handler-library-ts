@@ -9,5 +9,10 @@
 export type CognitoRequestInformation = {
     identityId?: string;
     userPoolId?: string;
+    subject?: string;
+
+    /**
+     * @deprecated
+     */
     username?: string;
 };
