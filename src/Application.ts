@@ -15,6 +15,7 @@ import {CORS} from './Middleware/CORS';
 import {EventContextHandler} from './Middleware/AWS/EventContextHandler';
 import {ExpressErrorHandler} from './Middleware/ExpressErrorHandler';
 import {UnhandledRoute} from './Middleware/UnhandledRoute';
+import {ResponseMapper} from './HTTP/ResponseMapper';
 
 
 /**
@@ -40,6 +41,20 @@ export class Application {
 
         this.events = new EventEmitter();
         this.express = express();
+
+        if (false !== this.config.autoTransform) {
+            this.express.set('json replacer', (_key: any, value: any): any => {
+                if ('object' !== typeof value) {
+                    return value;
+                }
+
+                if (value?.responseMapper instanceof ResponseMapper) {
+                    return value.responseMapper.transform(value);
+                }
+
+                return value;
+            });
+        }
 
         this.initialize();
     }

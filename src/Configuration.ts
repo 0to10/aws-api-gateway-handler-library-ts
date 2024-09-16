@@ -8,5 +8,6 @@
  */
 export type Configuration = {
     disable?: Array<string>;
+    autoTransform?: boolean;
     cors?: boolean;
 };

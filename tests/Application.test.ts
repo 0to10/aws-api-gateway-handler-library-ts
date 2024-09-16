@@ -6,7 +6,7 @@ import http from 'http';
 import request, {Agent} from 'supertest';
 import {describe, expect, test, afterAll} from '@jest/globals';
 
-import {Application} from '../src';
+import {Application, ResponseMapper, ResponseMapperAware} from '../src';
 
 
 describe('Application', (): void => {
@@ -118,6 +118,97 @@ describe('Application', (): void => {
                 expect(headers).not.toContainEqual('access-control-allow-headers');
                 expect(headers).not.toContainEqual('access-control-allow-methods');
                 expect(headers).not.toContainEqual('access-control-allow-origin');
+            })
+        ;
+
+        server.close();
+    });
+
+    // TODO maybe move this somewhere else
+    class TestTransformer extends ResponseMapper<any> {
+        transform(input: any): object {
+            return {
+                transformed: 'whoop',
+                data: input.data,
+            };
+        }
+    }
+
+    const entity: any = new class implements ResponseMapperAware<any> {
+        public readonly data: string = 'this is important!';
+
+        get responseMapper(): ResponseMapper<any> {
+            return new TestTransformer();
+        }
+    }
+
+    test('transformer is applied on single entity', async (): Promise<void> => {
+        const application: Application = new Application({
+            cors: false,
+        });
+
+        application.express.get('/test', (
+            _request: any,
+            response: any,
+        ): void => {
+            response.status(200).json({
+                entity,
+            });
+        });
+
+        server = application.listen(80);
+
+        await request(server)
+            .get('/test')
+            .then(response => {
+                expect(response.status).toStrictEqual(200);
+                expect(response.body).toStrictEqual({
+                    entity: {
+                        transformed: 'whoop',
+                        data: 'this is important!',
+                    },
+                });
+            })
+        ;
+
+        server.close();
+    });
+
+    test('transformer is applied on multiple entities', async (): Promise<void> => {
+        const application: Application = new Application({
+            cors: false,
+        });
+
+        application.express.get('/test', (
+            _request: any,
+            response: any,
+        ): void => {
+            response.status(200).json({
+                entities: [
+                    entity,
+                    entity,
+                ],
+            });
+        });
+
+        server = application.listen(80);
+
+        await request(server)
+            .get('/test')
+            .then(response => {
+                expect(response.status).toStrictEqual(200);
+                expect(response.body).toStrictEqual({
+                    entities: [
+                        {
+                            transformed: 'whoop',
+                            data: 'this is important!',
+                        },
+                        {
+                            transformed: 'whoop',
+                            data: 'this is important!',
+                        },
+                    ],
+                });
             })
         ;
 
