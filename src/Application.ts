@@ -14,6 +14,7 @@ import {Configuration} from './Configuration';
 import {CORS} from './Middleware/CORS';
 import {EventContextHandler} from './Middleware/AWS/EventContextHandler';
 import {ExpressErrorHandler} from './Middleware/ExpressErrorHandler';
+import {MiddlewareManager} from './Middleware/MiddlewareManager';
 import {UnhandledRoute} from './Middleware/UnhandledRoute';
 import {ResponseMapper} from './HTTP/ResponseMapper';
 
@@ -28,6 +29,7 @@ export class Application {
 
     public readonly events: EventEmitter;
     public readonly express: Express;
+    public readonly middleware: MiddlewareManager;
 
     public readonly config: Configuration = {
         disable: ['x-powered-by'],
@@ -41,6 +43,8 @@ export class Application {
 
         this.events = new EventEmitter();
         this.express = express();
+
+        this.middleware = new MiddlewareManager(this.express);
 
         if (false !== this.config.autoTransform) {
             this.express.set('json replacer', (_key: any, value: any): any => {
