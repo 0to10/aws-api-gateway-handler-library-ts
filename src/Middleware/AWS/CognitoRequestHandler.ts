@@ -1,7 +1,10 @@
 'use strict';
 
-import {APIGatewayEventIdentity} from 'aws-lambda';
+import {APIGatewayEventDefaultAuthorizerContext} from 'aws-lambda';
 import {NextFunction, Request, Response, RequestHandler} from 'express';
+import {APIGatewayEventRequestContextWithAuthorizer} from 'aws-lambda/common/api-gateway';
+
+type RequestContext = APIGatewayEventRequestContextWithAuthorizer<APIGatewayEventDefaultAuthorizerContext>;
 
 
 /**
@@ -20,29 +23,37 @@ export class CognitoRequestHandler {
         ): void => {
             request.cognito = {};
 
-            const eventIdentity: APIGatewayEventIdentity | undefined = request.apiGateway?.event?.requestContext?.identity;
+            const context: RequestContext | undefined = request.apiGateway?.event?.requestContext;
 
-            if (!eventIdentity) {
-                return next();
+            if (context?.identity) {
+                const {cognitoIdentityId, cognitoAuthenticationProvider} = context.identity;
+
+                if (
+                    cognitoIdentityId
+                    && 'UNAUTH' !== cognitoIdentityId
+                ) {
+                    request.cognito.identityId = cognitoIdentityId;
+                }
+
+                if (cognitoAuthenticationProvider) {
+                    const [, cognitoUserPoolId, cognitoSubject] = cognitoAuthenticationProvider
+                        .match(/([\w-]+_[0-9a-zA-Z]+):CognitoSignIn:(.+)/) || []
+                    ;
+
+                    request.cognito.userPoolId = cognitoUserPoolId;
+                    request.cognito.subject = cognitoSubject;
+                    request.cognito.username = cognitoSubject;
+                }
             }
 
-            const {cognitoIdentityId, cognitoAuthenticationProvider} = eventIdentity;
+            const claims: Record<string, string> | undefined = context?.authorizer?.claims;
 
-            if (
-                cognitoIdentityId
-                && 'UNAUTH' !== cognitoIdentityId
-            ) {
-                request.cognito.identityId = cognitoIdentityId;
-            }
-
-            if (cognitoAuthenticationProvider) {
-                const [, cognitoUserPoolId, cognitoSubject] = cognitoAuthenticationProvider
-                    .match(/([\w-]+_[0-9a-zA-Z]+):CognitoSignIn:(.+)/) || []
-                ;
+            if (claims) {
+                const [, cognitoUserPoolId] = claims.iss.match(/\/([^/]+)$/) || [];
 
                 request.cognito.userPoolId = cognitoUserPoolId;
-                request.cognito.subject = cognitoSubject;
-                request.cognito.username = cognitoSubject;
+                request.cognito.subject = claims.sub;
+                request.cognito.username = claims.sub;
             }
 
             next();

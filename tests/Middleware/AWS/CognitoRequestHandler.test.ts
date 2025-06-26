@@ -22,7 +22,31 @@ describe('CognitoRequestHandler', (): void => {
         process.env.AWS_REGION = undefined;
     });
 
-    test('data is fetched from request', async (): Promise<void> => {
+    test.each([
+        {
+            event: require('./api-gateway-event.json'),
+            expectedStatus: 200,
+            expectedCognito: {
+                identityId: 'us-east-1:3bc38b1e-c4c1-4aa3-9df5-9d7d83c1bc53',
+                userPoolId: 'us-east-1_TestPool',
+                subject: '1a072f08-5c61-4c89-807e-417d22702eb7',
+                username: '1a072f08-5c61-4c89-807e-417d22702eb7',
+            },
+        },
+        {
+            event: require('./api-gateway-jwt-event.json'),
+            expectedStatus: 200,
+            expectedCognito: {
+                userPoolId: 'us-east-1_PoolViaClaims',
+                subject: '75d7e526-7cdd-4745-8d13-61872893f1db',
+                username: '75d7e526-7cdd-4745-8d13-61872893f1db',
+            },
+        },
+    ])('data is fetched from request', async ({
+        event,
+        expectedStatus,
+        expectedCognito,
+    }): Promise<void> => {
         process.env.AWS_REGION = 'AWS';
 
         const application: Application = new Application();
@@ -38,8 +62,6 @@ describe('CognitoRequestHandler', (): void => {
 
         server = application.listen(80);
 
-        const event: object = require('./api-gateway-event.json');
-
         const encodedEvent: string = encodeURIComponent(JSON.stringify(event));
         const encodedContext: string = encodeURIComponent(JSON.stringify({}));
 
@@ -48,14 +70,9 @@ describe('CognitoRequestHandler', (): void => {
             .set('x-apigateway-event', encodedEvent)
             .set('x-apigateway-context', encodedContext)
             .then(response => {
-                expect(response.status).toStrictEqual(200);
+                expect(response.status).toStrictEqual(expectedStatus);
                 expect(response.body).toStrictEqual({
-                    cognito: {
-                        identityId: 'us-east-1:00000000-0000-0000-0000-000000000000',
-                        userPoolId: 'us-east-1_TestPool',
-                        subject: '1a072f08-5c61-4c89-807e-417d22702eb7',
-                        username: '1a072f08-5c61-4c89-807e-417d22702eb7',
-                    },
+                    cognito: expectedCognito,
                 });
             })
         ;

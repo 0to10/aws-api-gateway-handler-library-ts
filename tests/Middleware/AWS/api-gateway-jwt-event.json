@@ -1,0 +1,36 @@
+{
+  "resource": "/api/resource",
+  "path": "/api/resource",
+  "httpMethod": "GET",
+  "headers": {
+    "Accept": "application/json",
+    "Authorization": "Bearer not-required-for-the-test"
+  },
+  "queryStringParameters": {
+    "id": "12345"
+  },
+  "pathParameters": {},
+  "stageVariables": {},
+  "requestContext": {
+    "resourceId": "abc123",
+    "authorizer": {
+      "claims": {
+        "sub": "75d7e526-7cdd-4745-8d13-61872893f1db",
+        "name": "John Doe",
+        "email": "johndoe@example.com",
+        "iss": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_PoolViaClaims",
+        "exp": 1609459200,
+        "iat": 1609455600
+      },
+      "principalId": "1234567890"
+    },
+    "requestTime": "25/Jun/2025:12:34:56 +0000",
+    "path": "/api/resource",
+    "accountId": "123456789012",
+    "resourcePath": "/api/resource",
+    "httpMethod": "GET",
+    "apiId": "xyz123"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}
