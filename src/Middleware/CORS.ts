@@ -11,10 +11,10 @@ import {NextFunction, Request, Response, RequestHandler} from 'express';
  */
 export class CORS {
 
-    private static credentialHeaders: [
-        'authorization',
-        'cookie',
-    ];
+    // private static credentialHeaders: [
+    //     'authorization',
+    //     'cookie',
+    // ];
 
     public static handle(): RequestHandler {
         return (
@@ -33,7 +33,7 @@ export class CORS {
                 return;
             }
 
-            if (CORS.requestContainsHeader(request, CORS.credentialHeaders)) {
+            if (CORS.requestContainsHeader(request, ['authorization', 'cookie'])) {
                 response.header('Access-Control-Allow-Credentials', 'true');
             }
 
@@ -42,7 +42,7 @@ export class CORS {
     }
 
     private static requestContainsHeader(request: Request, headers: Array<string>): boolean {
-        for (const header of headers) {
+        for (const header of headers || []) {
             if (undefined !== request.header(header)) {
                 return true;
             }
